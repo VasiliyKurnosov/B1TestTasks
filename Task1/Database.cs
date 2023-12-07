@@ -17,24 +17,29 @@ namespace Task1
             {
                 connection.Open();
 
-                int insertedRowsNumber = 0;
-                foreach (var row in rows)
+                using (var transaction = connection.BeginTransaction())
                 {
-                    var data = row.Split("||");
-                    if (data.Length != 6)
+                    int insertedRowsNumber = 0;
+                    foreach (var row in rows)
                     {
-                        throw new FormatException(row);
-                    }
+                        var data = row.Split("||");
+                        if (data.Length != 6)
+                        {
+                            throw new FormatException(row);
+                        }
 
-                    string realNumberString = Double.Parse(data[4])
-                        .ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
-                    string sqlExpression = @$"INSERT INTO rows
+                        string realNumberString = Double.Parse(data[4])
+                            .ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+                        string sqlExpression = @$"INSERT INTO rows
 (date, english_sequence, russian_sequence, integer_number, real_number)
 VALUES('{data[0]}', '{data[1]}', '{data[2]}', {data[3]}, {realNumberString});";
 
-                    var insertRowCommand = new SqliteCommand(sqlExpression, connection);
-                    insertedRowsNumber += insertRowCommand.ExecuteNonQuery();
-                    progress.Report(insertedRowsNumber);
+                        var insertRowCommand = new SqliteCommand(sqlExpression, connection, transaction);
+                        insertedRowsNumber += insertRowCommand.ExecuteNonQuery();
+                        progress.Report(insertedRowsNumber);
+                    }
+
+                    transaction.Commit();
                 }
             }
         }

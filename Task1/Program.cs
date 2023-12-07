@@ -19,12 +19,21 @@ while (true)
     var database = new Database(connectionString);
 
     var rows = File.ReadAllLines(unitedFilePath);
+    double percentOfImportedRows = 0;
+    double step = 0.01;
     var importProgress = new Progress<int>(importedRowsNumber =>
     {
-        Console.Write($"\rImporting rows...[{importedRowsNumber}/{rows.Length}]");
+        double currentPercent = (double)importedRowsNumber / rows.Length;
+        if (currentPercent - percentOfImportedRows > step)
+        {
+            percentOfImportedRows = currentPercent;
+            Console.Write($"\rImporting rows...[{Math.Round(percentOfImportedRows * 100) + 1}%]");
+        }
     });
     database.ImportRows(rows, importProgress);
     Console.WriteLine();
+    Console.WriteLine($"Imported {rows.Length} rows");
+
     Console.WriteLine("Sum of integer numbers: " + database.CalculateIntegerNumbersSum());
     Console.WriteLine("Average of real numbers: " + database.CalculateRealNumbersAverage());
 
