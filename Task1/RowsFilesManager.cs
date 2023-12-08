@@ -7,8 +7,6 @@ namespace Task1
         public static void CreateRowsFiles(string directoryPath, string filesNamePattern, int filesNumber,
             int rowsInFileNumber)
         {
-            var generator = new RandomDataGenerator();
-
             if (Directory.Exists(directoryPath))
             {
                 Directory.Delete(directoryPath, true);
@@ -16,7 +14,7 @@ namespace Task1
             Directory.CreateDirectory(directoryPath);
             for (int i = 0; i < filesNumber; i++)
             {
-                var rows = CreateRows(generator, rowsInFileNumber);
+                var rows = CreateRows(rowsInFileNumber);
                 File.AppendAllLines(directoryPath + "\\" + filesNamePattern + i + ".txt", rows);
             }
         }
@@ -49,8 +47,9 @@ namespace Task1
             return removedRowsNumber;
         }
 
-        private static IEnumerable<string> CreateRows(RandomDataGenerator generator, int rowsNumber)
+        private static IEnumerable<string> CreateRows(int rowsNumber)
         {
+            var generator = new RandomDataGenerator();
             var startDate = DateTime.Today.AddYears(-5);
             int decimalPlacesNumber = 8;
             for (int i = 0; i < rowsNumber; i++)

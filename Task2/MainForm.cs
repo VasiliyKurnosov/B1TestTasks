@@ -2,7 +2,7 @@ using Task2.Models;
 
 namespace Task2
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         private readonly Database _database;
         private readonly string[] _classDescriptions;
@@ -12,7 +12,7 @@ namespace Task2
         private List<Turnover> _turnoversGroupedByClass = new List<Turnover>();
         private Turnover _totalTurnover;
 
-        public Form1()
+        public MainForm()
         {
             _database = new Database("Data Source=..\\..\\..\\Database\\task2.db");
             InitializeComponent();
@@ -96,6 +96,5 @@ namespace Task2
             ShowTable();
             _fileNamesListBox.Items.Add(filePath.Split('\\')[^1]);
         }
-
     }
 }
